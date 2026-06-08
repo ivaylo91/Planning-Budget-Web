@@ -13,6 +13,12 @@ import {
   faChevronRight,
   faBell,
   faMagnifyingGlass,
+  faCartShopping,
+  faUser,
+  faEnvelope,
+  faLock,
+  faEye,
+  faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons'
 
 interface IconProps {
@@ -38,3 +44,9 @@ export const IconCheck = makeIcon(faCheck)
 export const IconChevronRight = makeIcon(faChevronRight)
 export const IconBell = makeIcon(faBell)
 export const IconSearch = makeIcon(faMagnifyingGlass)
+export const IconCart = makeIcon(faCartShopping)
+export const IconUser = makeIcon(faUser)
+export const IconMail = makeIcon(faEnvelope)
+export const IconLock = makeIcon(faLock)
+export const IconEye = makeIcon(faEye)
+export const IconEyeSlash = makeIcon(faEyeSlash)
