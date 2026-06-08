@@ -86,7 +86,7 @@ export default function BudgetSetupPage() {
             key={type}
             type="button"
             onClick={() => handlePeriodChange(type)}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+            className={`pressable flex-1 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
               budget.period === type ? 'bg-accent text-white' : 'text-app-text-sec'
             }`}
           >
@@ -108,7 +108,7 @@ export default function BudgetSetupPage() {
                 strokeDashoffset={dashOffset}
                 strokeLinecap="round"
                 transform="rotate(-90 75 75)"
-                style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+                style={{ transition: 'stroke-dashoffset 0.8s var(--ease-in-out)' }}
               />
             </svg>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
@@ -154,7 +154,7 @@ export default function BudgetSetupPage() {
               key={preset}
               type="button"
               onClick={() => applyAmount(preset)}
-              className={`flex-1 py-2.5 rounded-xl text-[13px] font-semibold border-[1.5px] transition-colors ${
+              className={`pressable flex-1 py-2.5 rounded-xl text-[13px] font-semibold border-[1.5px] transition-colors ${
                 budget.amount === preset
                   ? 'bg-accent text-white border-accent'
                   : 'text-app-text-sec border-app-border'
@@ -177,7 +177,7 @@ export default function BudgetSetupPage() {
 
         <button
           type="submit"
-          className="w-full mt-4 rounded-xl bg-accent text-white text-sm font-semibold py-2.5 hover:bg-accent-dark transition-colors"
+          className="pressable w-full mt-4 rounded-xl bg-accent text-white text-sm font-semibold py-2.5 hover:bg-accent-dark transition-colors"
         >
           Запази бюджета
         </button>
@@ -207,7 +207,7 @@ export default function BudgetSetupPage() {
             <button
               type="button"
               onClick={toggleNotifications}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              className={`pressable shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 notifEnabled ? 'bg-accent text-white' : 'bg-app-bg text-app-text-sec'
               }`}
             >

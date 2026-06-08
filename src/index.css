@@ -10,9 +10,31 @@
   --color-app-text-sec: #7a7a8e;
 }
 
+:root {
+  /* Strong custom curves — built-in CSS easings feel weak for UI */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
 body {
   margin: 0;
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
   background: var(--color-app-bg);
   color: var(--color-app-text);
+}
+
+/* Buttons must feel responsive to press — instant feedback confirms the UI heard the user */
+.pressable {
+  transition: transform 120ms var(--ease-out);
+}
+.pressable:active {
+  transform: scale(0.97);
+  transition-duration: 60ms;
+}
+
+/* Touch devices trigger :hover on tap — gate hover-only effects behind a real-hover query */
+@media (hover: hover) and (pointer: fine) {
+  .hoverable:hover {
+    filter: brightness(0.96);
+  }
 }

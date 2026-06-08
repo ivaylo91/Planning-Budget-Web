@@ -178,7 +178,7 @@ export default function ShoppingListPage() {
         />
         <button
           type="submit"
-          className="col-span-12 sm:col-span-2 rounded-xl bg-accent text-white text-sm font-semibold py-2 hover:bg-accent-dark transition-colors"
+          className="pressable col-span-12 sm:col-span-2 rounded-xl bg-accent text-white text-sm font-semibold py-2 hover:bg-accent-dark transition-colors"
         >
           Добави
         </button>
@@ -235,7 +235,7 @@ export default function ShoppingListPage() {
                     <button
                       type="button"
                       onClick={() => togglePurchased(item.id)}
-                      className="w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors"
+                      className="pressable w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors"
                       style={{
                         background: item.purchased ? 'var(--color-accent)' : 'transparent',
                         borderColor: item.purchased ? 'var(--color-accent)' : 'var(--color-app-text-sec)50',
@@ -270,7 +270,7 @@ export default function ShoppingListPage() {
                         <button
                           type="button"
                           onClick={() => updateQty(item.id, -1)}
-                          className="w-7 h-7 rounded-lg border border-app-border flex items-center justify-center text-accent"
+                          className="pressable w-7 h-7 rounded-lg border border-app-border flex items-center justify-center text-accent"
                         >
                           <IconMinus size={14} />
                         </button>
@@ -288,7 +288,7 @@ export default function ShoppingListPage() {
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg shrink-0"
+                      className="pressable w-8 h-8 flex items-center justify-center rounded-lg shrink-0"
                       aria-label="Премахни"
                     >
                       <IconTrash size={16} color="#EF4444" />
@@ -304,7 +304,7 @@ export default function ShoppingListPage() {
                       <button
                         type="button"
                         onClick={() => applyPromotion(item.id, suggestion)}
-                        className="rounded-full bg-accent text-white font-semibold px-2.5 py-1 hover:bg-accent-dark transition-colors"
+                        className="pressable rounded-full bg-accent text-white font-semibold px-2.5 py-1 hover:bg-accent-dark transition-colors"
                       >
                         Приложи цената
                       </button>
@@ -327,7 +327,7 @@ export default function ShoppingListPage() {
             type="button"
             onClick={finishShopping}
             disabled={purchasedItems.length === 0}
-            className="rounded-xl bg-accent text-white text-sm font-semibold px-4 py-2.5 hover:bg-accent-dark transition-colors disabled:bg-app-border disabled:text-app-text-sec disabled:cursor-not-allowed"
+            className="pressable rounded-xl bg-accent text-white text-sm font-semibold px-4 py-2.5 hover:bg-accent-dark transition-colors disabled:bg-app-border disabled:text-app-text-sec disabled:cursor-not-allowed"
           >
             Приключи пазаруването ({purchasedItems.length})
           </button>

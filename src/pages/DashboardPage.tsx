@@ -101,7 +101,7 @@ export default function DashboardPage() {
         </p>
         <Link
           to="/budget"
-          className="inline-block rounded-xl bg-accent text-white text-sm font-semibold px-4 py-2.5 hover:bg-accent-dark transition-colors"
+          className="pressable inline-block rounded-xl bg-accent text-white text-sm font-semibold px-4 py-2.5 hover:bg-accent-dark transition-colors"
         >
           Задай бюджет
         </Link>
@@ -126,7 +126,7 @@ export default function DashboardPage() {
         </div>
         <button
           type="button"
-          className="relative w-[42px] h-[42px] rounded-2xl flex items-center justify-center bg-app-card border border-app-border"
+          className="pressable relative w-[42px] h-[42px] rounded-2xl flex items-center justify-center bg-app-card border border-app-border"
         >
           <IconBell size={20} color="var(--color-accent)" />
           <span className="absolute top-2 right-2.5 w-2 h-2 rounded-full bg-accent border-2 border-app-card" />
@@ -164,7 +164,7 @@ export default function DashboardPage() {
             <Link
               key={action.to}
               to={action.to}
-              className="flex flex-col items-center px-3 pt-[18px] pb-3.5 rounded-2xl bg-app-card border border-app-border hover:shadow-sm transition-shadow"
+              className="pressable flex flex-col items-center px-3 pt-[18px] pb-3.5 rounded-2xl bg-app-card border border-app-border hover:shadow-sm transition-shadow"
             >
               <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center mb-2 bg-accent/10">
                 <Icon size={22} color="var(--color-accent)" />

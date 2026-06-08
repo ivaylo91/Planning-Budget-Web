@@ -65,7 +65,7 @@ function App() {
                 key={tab.to}
                 to={tab.to}
                 end={tab.end}
-                className="flex flex-col items-center gap-0.5 px-2 py-1 relative transition-transform"
+                className="pressable flex flex-col items-center gap-0.5 px-2 py-1 relative"
               >
                 {({ isActive }) => (
                   <>

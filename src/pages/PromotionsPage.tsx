@@ -126,7 +126,7 @@ export default function PromotionsPage() {
     <div className="space-y-1 relative">
       {toast.message && (
         <div
-          className={`absolute -top-1 left-0 right-0 z-20 flex items-center gap-2 rounded-2xl bg-accent text-white px-4 py-3 text-[13px] font-semibold shadow-lg transition-all duration-300 ${
+          className={`absolute -top-1 left-0 right-0 z-20 flex items-center gap-2 rounded-2xl bg-accent text-white px-4 py-3 text-[13px] font-semibold shadow-lg transition-[opacity,transform] duration-300 ease-out ${
             toast.visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
           }`}
         >
@@ -169,7 +169,7 @@ export default function PromotionsPage() {
                 key={store}
                 type="button"
                 onClick={() => setStoreFilter(store)}
-                className={`px-4 py-2 rounded-xl text-[13px] font-semibold whitespace-nowrap transition-colors border ${
+                className={`pressable px-4 py-2 rounded-xl text-[13px] font-semibold whitespace-nowrap transition-colors border ${
                   storeFilter === store
                     ? 'bg-accent text-white border-accent'
                     : 'bg-app-card text-app-text-sec border-app-border'
@@ -187,7 +187,7 @@ export default function PromotionsPage() {
                 key={cat}
                 type="button"
                 onClick={() => setCatFilter(cat)}
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-[10px] text-xs font-medium whitespace-nowrap border transition-colors ${
+                className={`pressable flex items-center gap-1 px-3 py-1.5 rounded-[10px] text-xs font-medium whitespace-nowrap border transition-colors ${
                   catFilter === cat ? 'bg-accent/[0.09] text-accent border-accent/25' : 'bg-transparent text-app-text-sec border-transparent'
                 }`}
               >
@@ -240,7 +240,7 @@ export default function PromotionsPage() {
                         type="button"
                         onClick={() => !inList && addToList(promo)}
                         disabled={inList}
-                        className={`w-[38px] h-[38px] rounded-xl flex items-center justify-center shrink-0 border-none transition-all duration-200 ${
+                        className={`pressable w-[38px] h-[38px] rounded-xl flex items-center justify-center shrink-0 border-none transition-[transform,background-color] duration-200 ${
                           justAdded ? 'scale-[1.15]' : 'scale-100'
                         }`}
                         style={{ background: justAdded ? '#22C55E' : inList ? 'var(--color-app-border)' : 'var(--color-accent)' }}

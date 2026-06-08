@@ -122,7 +122,7 @@ export default function HistoryPage() {
               <button
                 type="button"
                 onClick={() => setExpandedId(expanded ? null : purchase.id)}
-                className="flex items-center gap-3 px-3.5 py-3.5 rounded-2xl bg-app-card border border-app-border w-full text-left"
+                className="pressable flex items-center gap-3 px-3.5 py-3.5 rounded-2xl bg-app-card border border-app-border w-full text-left"
               >
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-accent text-white text-base">
                   🛒

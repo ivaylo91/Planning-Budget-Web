@@ -59,7 +59,7 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-xl bg-accent text-white font-semibold text-sm py-2.5 disabled:opacity-60"
+            className="pressable w-full rounded-xl bg-accent text-white font-semibold text-sm py-2.5 disabled:opacity-60"
           >
             {busy ? 'Моля, изчакайте…' : mode === 'signin' ? 'Вход' : 'Регистрация'}
           </button>
@@ -72,7 +72,7 @@ export default function AuthPage() {
             setError(null)
             setInfo(null)
           }}
-          className="w-full text-center text-[13px] font-medium text-app-text-sec"
+          className="pressable w-full text-center text-[13px] font-medium text-app-text-sec"
         >
           {mode === 'signin' ? 'Нямате акаунт? Регистрирайте се' : 'Вече имате акаунт? Влезте'}
         </button>
