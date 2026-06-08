@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-08T09:00:34Z",
+  "title": "Design System: Пазарувай умно",
+  "extensions": {
+    "colorMeta": {
+      "terracotta": { "role": "primary", "displayName": "Terracotta", "canonical": "#e8712a", "tonalRamp": ["#3a1c0a", "#5e2c10", "#874015", "#b15518", "#cf5811", "#e8712a", "#f0986a", "#f8c7ac"] },
+      "terracotta-deep": { "role": "primary", "displayName": "Terracotta Deep", "canonical": "#cf5811", "tonalRamp": ["#33150a", "#54250f", "#7a3614", "#a44818", "#cf5811", "#e07a3f", "#eda071", "#f7cdb2"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#f5f5f7", "tonalRamp": ["#1a1a1f", "#2e2e35", "#48484f", "#67676f", "#9a9aa2", "#cfcfd4", "#e8e8ec", "#f5f5f7"] },
+      "paper-card": { "role": "neutral", "displayName": "Paper Card", "canonical": "#ffffff", "tonalRamp": ["#1c1c1f", "#313134", "#4c4c50", "#6c6c70", "#9d9da0", "#d0d0d2", "#ececee", "#ffffff"] },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "#e8e8ee", "tonalRamp": ["#222228", "#38383f", "#54545d", "#75757e", "#a3a3aa", "#c8c8d0", "#dcdce3", "#e8e8ee"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#1a1a2e", "tonalRamp": ["#0c0c16", "#1a1a2e", "#2c2c47", "#414163", "#5a5a80", "#82829e", "#b3b3c4", "#dcdce3"] },
+      "ink-muted": { "role": "neutral", "displayName": "Ink Muted", "canonical": "#7a7a8e", "tonalRamp": ["#202028", "#363641", "#52525f", "#6c6c7c", "#7a7a8e", "#9999a8", "#bcbcc6", "#dededf"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The single hero figure on a screen — budget remaining, donut percentage. At most one per screen." },
+      "headline": { "displayName": "Headline", "purpose": "Page titles (Бюджет, История, Промоции)." },
+      "title": { "displayName": "Title", "purpose": "Card and section headings." },
+      "body": { "displayName": "Body", "purpose": "List items, descriptions, form labels, button text." },
+      "label": { "displayName": "Label", "purpose": "Captions, badges, nav labels, store/category tags, timestamps." }
+    },
+    "shadows": [
+      { "name": "hero-lift", "value": "0 8px 32px rgba(0,0,0,0.15)", "purpose": "The budget hero card and other primary headline surfaces. Rare — the system's strongest visual statement." },
+      { "name": "card-lift", "value": "0 2px 12px rgba(26,26,46,0.06)", "purpose": "Standard content cards (promo rows, list items, stat tiles) — gentle ambient separation from Paper." },
+      { "name": "toast-lift", "value": "0 12px 28px rgba(232,113,42,0.25)", "purpose": "In-context confirmations and toasts — shadow tinted toward Terracotta to echo the accent." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Strong ease-out for entering elements and press feedback (--ease-out)." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "On-screen movement, e.g. the budget ring's stroke-dashoffset animation (--ease-in-out)." },
+      { "name": "press-feedback", "value": "scale(0.97) over 60ms on :active, 120ms ease-out on release", "purpose": "The .pressable pattern applied to every tappable surface in the system." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled terracotta call-to-action button with press feedback.",
+      "html": "<button class=\"ds-btn-primary\">Запази бюджета</button>",
+      "css": ".ds-btn-primary { background: #e8712a; color: #ffffff; font-weight: 600; font-size: 14px; padding: 10px 16px; border: none; border-radius: 12px; transition: background-color 200ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-primary:hover { background: #cf5811; } .ds-btn-primary:focus-visible { outline: 2px solid rgba(232,113,42,0.4); outline-offset: 2px; } .ds-btn-primary:active { transform: scale(0.97); transition-duration: 60ms; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Text-only secondary action (mode switches, sign-out).",
+      "html": "<button class=\"ds-btn-ghost\">Нямате акаунт? Регистрирайте се</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #7a7a8e; font-weight: 500; font-size: 13px; border: none; padding: 8px 4px; transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-ghost:focus-visible { outline: 2px solid rgba(232,113,42,0.4); outline-offset: 2px; } .ds-btn-ghost:active { transform: scale(0.97); transition-duration: 60ms; }"
+    },
+    {
+      "name": "Stat Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Standard content card — number-and-label tile (history stats, dashboard quick actions).",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-label\">Общо спестено</p><p class=\"ds-card-value\">€42.80</p></div>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e8e8ee; border-radius: 16px; padding: 16px; box-shadow: 0 2px 12px rgba(26,26,46,0.06); } .ds-card-label { margin: 0 0 2px; font-size: 12px; color: #7a7a8e; } .ds-card-value { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; color: #e8712a; }"
+    },
+    {
+      "name": "Hero Budget Card",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "The gradient hero surface showing remaining budget — the system's one Display-scale figure per screen.",
+      "html": "<div class=\"ds-hero\"><p class=\"ds-hero-label\">Оставащ бюджет</p><p class=\"ds-hero-value\">€157.20</p><div class=\"ds-hero-track\"><div class=\"ds-hero-bar\"></div></div></div>",
+      "css": ".ds-hero { background: linear-gradient(135deg, #e8712a, #cf5811); color: #ffffff; border-radius: 20px; padding: 24px 22px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); } .ds-hero-label { margin: 0 0 4px; font-size: 13px; opacity: 0.85; } .ds-hero-value { margin: 0; font-size: 38px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; } .ds-hero-track { height: 6px; border-radius: 9999px; background: rgba(255,255,255,0.25); margin: 16px 0; overflow: hidden; } .ds-hero-bar { height: 100%; width: 62%; border-radius: 9999px; background: #ffffff; transition: width 1000ms cubic-bezier(0.23, 1, 0.32, 1); }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip-active",
+      "description": "Store/category filter pill — active state is the only colored element in its row.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip ds-chip-active\">Billa</button><button class=\"ds-chip\">Lidl</button><button class=\"ds-chip\">Kaufland</button></div>",
+      "css": ".ds-chips { display: flex; gap: 8px; } .ds-chip { font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 12px; border: 1px solid #e8e8ee; background: #ffffff; color: #7a7a8e; transition: background-color 200ms ease, color 200ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-chip:active { transform: scale(0.97); transition-duration: 60ms; } .ds-chip-active { background: #e8712a; color: #ffffff; border-color: #e8712a; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard form field with terracotta focus halo.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"напр. 300\" />",
+      "css": ".ds-input { width: 100%; font-size: 14px; color: #1a1a2e; background: transparent; border: 1.5px solid #e8e8ee; border-radius: 12px; padding: 10px 14px; transition: border-color 150ms ease, box-shadow 150ms ease; } .ds-input::placeholder { color: #7a7a8e; } .ds-input:focus { outline: none; border-color: #e8712a; box-shadow: 0 0 0 4px rgba(232,113,42,0.15); }"
+    },
+    {
+      "name": "Bottom Tab Bar",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Sticky 5-tab bottom navigation — the active tab is the only colored element, marked by a small floating accent bar.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item ds-nav-item-active\"><span class=\"ds-nav-indicator\"></span><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"#e8712a\"><path d=\"M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z\"/></svg><span class=\"ds-nav-label ds-nav-label-active\">Начало</span></a><a class=\"ds-nav-item\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"#7a7a8e\"><path d=\"M20 13l-8 8-9-9V3h9z\"/></svg><span class=\"ds-nav-label\">Промоции</span></a></nav>",
+      "css": ".ds-nav { display: flex; justify-content: space-around; align-items: stretch; background: #ffffff; border-top: 1px solid #e8e8ee; padding: 8px 4px 6px; } .ds-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 8px; position: relative; text-decoration: none; transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-nav-item:active { transform: scale(0.97); transition-duration: 60ms; } .ds-nav-label { font-size: 10px; font-weight: 500; color: #7a7a8e; } .ds-nav-label-active { font-weight: 700; color: #e8712a; } .ds-nav-indicator { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 20px; height: 3px; border-radius: 4px; background: #e8712a; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Warm Receipt",
+    "overview": "Пазарувай умно (\"Shop smart\") is a personal grocery-budgeting companion: set a budget, track active promotions across seven Bulgarian retail chains, build a shopping list, and watch what you spent and saved settle into place. The system reads like a well-kept paper receipt redrawn for a screen — orderly rows, clear totals, generous quiet space, and exactly one warm color reserved for the things that matter: progress, savings, deals, and calls to action. Everything else stays calm and out of the way, because this is an app opened many times a day for a quick glance, not a destination to linger in.\n\nIt explicitly rejects the gray, joyless density of spreadsheet-style budgeting tools and the templated SaaS-dashboard look (hero-metric clichés, identical flat cards, gradient text, decorative glassmorphism). Nothing here should feel borrowed from an English-first finance template — the type, the numbers, the store names and the currency are native to the Bulgarian grocery market, and the design should feel made for it.",
+    "keyCharacteristics": [
+      "One warm terracotta accent carries meaning (money, progress, savings, action); everything else is quiet ink-on-paper neutrals.",
+      "Numbers are the hero: large, extrabold, tabular-feeling figures for budget, spend and savings, never competing with decoration.",
+      "Calm by default, lifted at the moments that deserve attention — the budget hero card, completion toasts, freshly-added items.",
+      "Every surface, label and store name is written for a Bulgarian grocery shopper, not translated from a generic template."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Terracotta appears with intent — action, progress, or a win — never as decoration. If a screen has more than a small handful of terracotta touches, something is being marked that doesn't deserve marking.", "section": "colors" },
+      { "name": "The Tonal Surface Rule", "body": "Depth between Paper and Paper Card comes from a half-step lightness shift plus a hairline border, not from gray fills or shadows at rest. Shadows are reserved for elements that should visually float.", "section": "colors" },
+      { "name": "The One Hero Number Rule", "body": "Each screen gets exactly one Display-scale figure — the thing the user opened the app to check. Everything else steps down at least one full hierarchy level so that number reads instantly.", "section": "typography" },
+      { "name": "The Earned Lift Rule", "body": "A shadow is a claim that something deserves the user's attention right now. Reserve it for the hero figure, confirmations, and momentary feedback — not for every card on the screen.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Terracotta (#e8712a) to the handful of elements that represent action, progress, or a win on any given screen — the One Accent Rule.",
+      "Do give the most important figure on each screen Display scale (38px/800) and let everything else step down — the One Hero Number Rule.",
+      "Do apply .pressable (scale(0.97) on :active, 120ms var(--ease-out)) to every tappable surface; this is opened many times a day and must always feel instantly responsive.",
+      "Do use the warm-tonal pairing (Paper #f5f5f7 → Paper Card #ffffff → Hairline #e8e8ee) to build depth before reaching for shadows; reserve Hero Lift and Card Lift shadows for surfaces that should visually float.",
+      "Do write every label, button, and empty-state in Bulgarian with EUR formatting via formatEUR() — this is a Bulgarian-market product, not a translated template."
+    ],
+    "donts": [
+      "Don't build the gray, joyless spreadsheet look — no flat gray fills, no muted-on-muted text. Body and secondary text must clear 4.5:1 against Paper and Paper Card.",
+      "Don't reach for hero-metric clichés, identical flat card grids, or gradient text — the templated-SaaS-dashboard look this system explicitly rejects.",
+      "Don't use border-left/border-right colored stripes as accents on cards or list rows. Mark state with fill, the chip pattern, or the floating nav indicator instead.",
+      "Don't introduce a second saturated color outside the budget ring's >90% red warning — that is the one deliberate exception, not a precedent.",
+      "Don't animate beyond transform/opacity/stroke-dashoffset (and color, for state changes); this keeps frequent daily interactions fast and battery-friendly, and always pair motion with a prefers-reduced-motion fallback."
+    ]
+  }
+}
