@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useStoredState, STORAGE_KEYS } from '../lib/storage'
+import { useSyncedState } from '../lib/sync'
 import type { Promotion, PurchaseRecord, ShoppingListItem } from '../lib/types'
 import { formatEUR } from '../lib/format'
 import { findMatchingPromotions, isPromotionActive, loadPromotions } from '../lib/promotions'
@@ -13,8 +13,8 @@ function makeId() {
 const NO_STORE = 'Без магазин'
 
 export default function ShoppingListPage() {
-  const [items, setItems] = useStoredState<ShoppingListItem[]>(STORAGE_KEYS.shoppingList, [])
-  const [, setPurchases] = useStoredState<PurchaseRecord[]>(STORAGE_KEYS.purchases, [])
+  const [items, setItems] = useSyncedState<ShoppingListItem[]>('shoppingList', [])
+  const [, setPurchases] = useSyncedState<PurchaseRecord[]>('purchases', [])
 
   const [name, setName] = useState('')
   const [quantity, setQuantity] = useState('1')

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useStoredState, STORAGE_KEYS } from '../lib/storage'
+import { useSyncedState } from '../lib/sync'
 import { discountPercent, findMatchingPromotions, isPromotionActive, loadPromotions } from '../lib/promotions'
 import type { Promotion, ShoppingListItem } from '../lib/types'
 import { formatEUR } from '../lib/format'
@@ -21,7 +21,7 @@ export default function PromotionsPage() {
   const [justAddedIds, setJustAddedIds] = useState<Set<string>>(new Set())
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false })
 
-  const [items, setItems] = useStoredState<ShoppingListItem[]>(STORAGE_KEYS.shoppingList, [])
+  const [items, setItems] = useSyncedState<ShoppingListItem[]>('shoppingList', [])
 
   useEffect(() => {
     let cancelled = false

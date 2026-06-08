@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useStoredState, STORAGE_KEYS } from '../lib/storage'
+import { useSyncedState } from '../lib/sync'
 import type { PurchaseRecord } from '../lib/types'
 import { formatDate } from '../lib/period'
 import { formatEUR } from '../lib/format'
@@ -38,7 +38,7 @@ function groupByMonth(purchases: PurchaseRecord[]): MonthGroup[] {
 }
 
 export default function HistoryPage() {
-  const [purchases] = useStoredState<PurchaseRecord[]>(STORAGE_KEYS.purchases, [])
+  const [purchases] = useSyncedState<PurchaseRecord[]>('purchases', [])
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const months = useMemo(() => groupByMonth(purchases), [purchases])

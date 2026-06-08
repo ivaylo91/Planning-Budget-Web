@@ -4,9 +4,11 @@ import PromotionsPage from './pages/PromotionsPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import HistoryPage from './pages/HistoryPage'
 import BudgetSetupPage from './pages/BudgetSetupPage'
-import { useStoredState, STORAGE_KEYS } from './lib/storage'
+import AuthPage from './pages/AuthPage'
+import { useSyncedState } from './lib/sync'
 import type { ShoppingListItem } from './lib/types'
 import { IconHome, IconTag, IconList, IconClock, IconWallet } from './lib/icons'
+import { useAuth } from './lib/auth'
 
 const TABS = [
   { to: '/', label: 'Начало', end: true, icon: IconHome },
@@ -17,12 +19,34 @@ const TABS = [
 ]
 
 function App() {
-  const [shoppingList] = useStoredState<ShoppingListItem[]>(STORAGE_KEYS.shoppingList, [])
+  const { session, loading, signOut } = useAuth()
+  const [shoppingList] = useSyncedState<ShoppingListItem[]>('shoppingList', [])
   const listCount = shoppingList.filter((item) => !item.purchased).length
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-app-bg">
+        <p className="text-sm text-app-text-sec">Зареждане…</p>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return <AuthPage />
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-app-bg">
       <main className="flex-1 max-w-xl w-full mx-auto px-5 pt-4 pb-6">
+        <div className="flex items-center justify-end pt-2 pb-1">
+          <button
+            type="button"
+            onClick={() => void signOut()}
+            className="text-[12px] font-medium text-app-text-sec"
+          >
+            {session.user.email} · Изход
+          </button>
+        </div>
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/promotions" element={<PromotionsPage />} />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useStoredState, STORAGE_KEYS } from '../lib/storage'
+import { useSyncedState } from '../lib/sync'
 import { DEFAULT_BUDGET, type Budget, type Promotion, type PurchaseRecord } from '../lib/types'
 import { formatDate, getCurrentPeriod, purchasesInPeriod } from '../lib/period'
 import { formatEUR } from '../lib/format'
@@ -45,8 +45,8 @@ function useAnimatedNumber(target: number): number {
 }
 
 export default function DashboardPage() {
-  const [budget] = useStoredState<Budget>(STORAGE_KEYS.budget, DEFAULT_BUDGET)
-  const [purchases] = useStoredState<PurchaseRecord[]>(STORAGE_KEYS.purchases, [])
+  const [budget] = useSyncedState<Budget>('budget', DEFAULT_BUDGET)
+  const [purchases] = useSyncedState<PurchaseRecord[]>('purchases', [])
   const [promotions, setPromotions] = useState<Promotion[] | null>(null)
 
   useEffect(() => {

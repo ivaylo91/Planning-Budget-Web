@@ -1,0 +1,58 @@
+import { useEffect, useRef, useState } from 'react'
+import { useAuth } from './auth'
+import { supabase } from './supabase'
+
+const COLUMN = {
+  budget: 'budget',
+  shoppingList: 'shopping_list',
+  purchases: 'purchases',
+} as const
+
+type SyncKey = keyof typeof COLUMN
+
+/** Like useStoredState, but persists to the signed-in user's row in Supabase instead of localStorage. */
+export function useSyncedState<T>(key: SyncKey, fallback: T) {
+  const { session } = useAuth()
+  const userId = session?.user.id
+  const column = COLUMN[key]
+  const [value, setValue] = useState<T>(fallback)
+  const ready = useRef(false)
+  const writeTimer = useRef<number | undefined>(undefined)
+
+  useEffect(() => {
+    ready.current = false
+    if (!userId) {
+      setValue(fallback)
+      return
+    }
+    let cancelled = false
+    supabase
+      .from('user_data')
+      .select(column)
+      .eq('user_id', userId)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (cancelled) return
+        const row = data as Record<string, T> | null
+        setValue(row?.[column] ?? fallback)
+        ready.current = true
+      })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, column])
+
+  useEffect(() => {
+    if (!userId || !ready.current) return
+    window.clearTimeout(writeTimer.current)
+    writeTimer.current = window.setTimeout(() => {
+      void supabase
+        .from('user_data')
+        .upsert({ user_id: userId, [column]: value, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
+    }, 500)
+    return () => window.clearTimeout(writeTimer.current)
+  }, [value, userId, column])
+
+  return [value, setValue] as const
+}

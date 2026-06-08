@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStoredState, STORAGE_KEYS } from '../lib/storage'
+import { useSyncedState } from '../lib/sync'
 import { DEFAULT_BUDGET, type Budget, type BudgetPeriod, type PurchaseRecord } from '../lib/types'
 import { getCurrentPeriod, purchasesInPeriod } from '../lib/period'
 import { formatEUR } from '../lib/format'
@@ -16,8 +16,8 @@ const PRESETS: Record<BudgetPeriod, number[]> = {
 }
 
 export default function BudgetSetupPage() {
-  const [budget, setBudget] = useStoredState<Budget>(STORAGE_KEYS.budget, DEFAULT_BUDGET)
-  const [purchases] = useStoredState<PurchaseRecord[]>(STORAGE_KEYS.purchases, [])
+  const [budget, setBudget] = useSyncedState<Budget>('budget', DEFAULT_BUDGET)
+  const [purchases] = useSyncedState<PurchaseRecord[]>('purchases', [])
   const [amount, setAmount] = useState(String(budget.amount || ''))
   const [startDate, setStartDate] = useState(budget.startDate)
   const [saved, setSaved] = useState(false)
