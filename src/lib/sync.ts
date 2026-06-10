@@ -15,6 +15,9 @@ function writeRow<T>(userId: string, column: ColumnName, value: T) {
   void supabase
     .from('user_data')
     .upsert({ user_id: userId, [column]: value, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
+    .then(({ error }) => {
+      if (error) console.error('Failed to save', column, error)
+    })
 }
 
 /** Like useStoredState, but persists to the signed-in user's row in Supabase instead of localStorage. */
