@@ -27,6 +27,12 @@ OUT_PATH = ROOT / 'public' / 'data' / 'promotions.csv'
 
 TOP_N_PER_STORE = 200
 
+# Minimum number of promos to keep per category per store (before filling the remaining
+# slots by overall rank) — without this, high-volume categories like "Основни хранителни
+# продукти" and "Напитки" crowd out thinner ones like "Хляб и тестени" or "Консерви" in
+# the global top-N ranking, sometimes down to zero.
+MIN_PER_CATEGORY = 8
+
 SOURCES = [
     ('Billa', ['Билла (Билла България ЕООД)_130007884.csv']),
     ('Lidl', ['Лидл България_131071587.csv']),
@@ -160,6 +166,34 @@ def collect_promos(filenames):
     return result
 
 
+def select_promos(promos, top_n, min_per_category):
+    """Picks up to `top_n` promos, first reserving up to `min_per_category` of the
+    best-ranked promos for each category (so thin categories aren't squeezed out),
+    then filling any remaining slots by overall rank (branch coverage, then discount).
+    """
+    def rank_key(item):
+        return (item[1][3], item[1][2])
+
+    by_category = defaultdict(list)
+    for name, data in promos.items():
+        by_category[classify(name)].append((name, data))
+
+    selected = {}
+    for items in by_category.values():
+        for name, data in sorted(items, key=rank_key, reverse=True)[:min_per_category]:
+            selected[name] = data
+
+    remaining = sorted(
+        (item for item in promos.items() if item[0] not in selected),
+        key=rank_key,
+        reverse=True,
+    )
+    for name, data in remaining[:max(0, top_n - len(selected))]:
+        selected[name] = data
+
+    return sorted(selected.items(), key=rank_key, reverse=True)[:top_n]
+
+
 def main():
     today = date.today()
     valid_from = today.isoformat()
@@ -169,12 +203,9 @@ def main():
     for store, filenames in SOURCES:
         promos = collect_promos(filenames)
         # Rank by branch coverage first (genuinely widespread deals over one-off regional
-        # quirks), then by discount size as a tiebreaker.
-        ranked = sorted(
-            promos.items(),
-            key=lambda kv: (kv[1][3], kv[1][2]),
-            reverse=True,
-        )[:TOP_N_PER_STORE]
+        # quirks), then by discount size as a tiebreaker — with a per-category floor so
+        # thin categories aren't crowded out entirely.
+        ranked = select_promos(promos, TOP_N_PER_STORE, MIN_PER_CATEGORY)
         for product, (regular, promo, _discount, _branch_count) in ranked:
             rows.append({
                 'store': store,
