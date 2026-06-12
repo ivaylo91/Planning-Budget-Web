@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CVS_DIR = ROOT / 'cvs'
 OUT_PATH = ROOT / 'public' / 'data' / 'promotions.csv'
 
-TOP_N_PER_STORE = 100
+TOP_N_PER_STORE = 200
 
 SOURCES = [
     ('Billa', ['Билла (Билла България ЕООД)_130007884.csv']),
@@ -124,6 +124,9 @@ def collect_promos(filenames):
     per_branch = defaultdict(dict)
     for filename in filenames:
         path = CVS_DIR / filename
+        if not path.exists():
+            print(f'  (skipping missing source file: {filename})')
+            continue
         with path.open(encoding='utf-8') as fh:
             reader = csv.reader(fh)
             next(reader, None)
