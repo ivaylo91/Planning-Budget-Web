@@ -19,6 +19,7 @@ import {
   faLock,
   faEye,
   faEyeSlash,
+  faArrowRotateRight,
 } from '@fortawesome/free-solid-svg-icons'
 
 interface IconProps {
@@ -50,3 +51,4 @@ export const IconMail = makeIcon(faEnvelope)
 export const IconLock = makeIcon(faLock)
 export const IconEye = makeIcon(faEye)
 export const IconEyeSlash = makeIcon(faEyeSlash)
+export const IconRefresh = makeIcon(faArrowRotateRight)
