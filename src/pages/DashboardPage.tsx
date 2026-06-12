@@ -7,8 +7,10 @@ import { formatEUR } from '../lib/format'
 import { notifyOnce } from '../lib/notifications'
 import { isPromotionActive, loadPromotions } from '../lib/promotions'
 import { categoryIcon } from '../lib/catalogVisuals'
-import { IconBell, IconTag, IconList, IconClock, IconWallet, IconRefresh } from '../lib/icons'
+import { IconBell, IconTag, IconList, IconClock, IconWallet, IconRefresh, IconChevronRight } from '../lib/icons'
 import BudgetRing from '../components/BudgetRing'
+import Bezel from '../components/Bezel'
+import Reveal from '../components/Reveal'
 
 const BUDGET_THRESHOLDS = [
   { ratio: 1, label: '100%', message: 'Достигнахте бюджета си' },
@@ -147,26 +149,27 @@ export default function DashboardPage() {
 
   if (!budget.amount) {
     return (
-      <div className="bg-app-card rounded-2xl border border-app-border p-6 text-center space-y-3 mt-4">
-        <h2 className="text-lg font-bold text-app-text">Добре дошли в Пазарувай умно 👋</h2>
-        <p className="text-sm text-app-text-sec">
-          За да започнем, задайте бюджет — сума и период (седмично или месечно), спрямо които ще следим разходите ви.
-        </p>
-        <Link
-          to="/budget"
-          className="pressable inline-block rounded-xl bg-accent text-white text-sm font-semibold px-4 py-2.5 hover:bg-accent-dark transition-colors"
-        >
-          Задай бюджет
-        </Link>
+      <div className="mt-3">
+        <Bezel variant="full" className="bg-app-card px-6 py-8 text-center space-y-3">
+          <h2 className="text-lg font-display font-bold text-app-text tracking-tight">Добре дошли в Пазарувай умно</h2>
+          <p className="text-sm text-app-text-sec max-w-[28ch] mx-auto">
+            За да започнем, задайте бюджет — сума и период (седмично или месечно), спрямо които ще следим разходите ви.
+          </p>
+          <Link
+            to="/budget"
+            className="pressable inline-block rounded-full bg-accent text-white text-sm font-semibold px-5 py-2.5 hover:bg-accent-dark transition-colors"
+          >
+            Задай бюджет
+          </Link>
+        </Bezel>
       </div>
     )
   }
 
   const quickActions = [
-    { icon: IconTag, label: 'Промоции', to: '/promotions', count: hotPromos.length || null },
-    { icon: IconList, label: 'Списък', to: '/list', count: null },
-    { icon: IconClock, label: 'История', to: '/history', count: null },
-    { icon: IconWallet, label: 'Бюджет', to: '/budget', count: null },
+    { icon: IconList, label: 'Списък', to: '/list' },
+    { icon: IconClock, label: 'История', to: '/history' },
+    { icon: IconWallet, label: 'Бюджет', to: '/budget' },
   ]
 
   return (
@@ -174,8 +177,8 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between py-2">
         <div>
-          <div className="text-[13px] text-app-text-sec mb-0.5">{greeting()} 👋</div>
-          <div className="text-[22px] font-bold text-app-text tracking-tight">Пазарувай умно</div>
+          <div className="text-[13px] text-app-text-sec mb-0.5">{greeting()}</div>
+          <div className="text-[22px] font-display font-bold text-app-text tracking-tight">Пазарувай умно</div>
         </div>
         <div className="relative" ref={notifRef}>
           <button
@@ -183,7 +186,7 @@ export default function DashboardPage() {
             onClick={() => setNotifOpen((open) => !open)}
             aria-label="Известия"
             aria-expanded={notifOpen}
-            className="pressable relative w-[42px] h-[42px] rounded-2xl flex items-center justify-center bg-app-card border border-app-border"
+            className="pressable relative w-[42px] h-[42px] rounded-2xl flex items-center justify-center bg-app-card shadow-diffused"
           >
             <IconBell size={20} color="var(--color-accent)" />
             {alerts.length > 0 && (
@@ -191,7 +194,7 @@ export default function DashboardPage() {
             )}
           </button>
           {notifOpen && (
-            <div className="notif-panel absolute right-0 top-[50px] w-72 max-w-[calc(100vw-2.5rem)] rounded-2xl bg-app-card border border-app-border shadow-[0_2px_12px_rgba(26,26,46,0.06)] p-2 z-10">
+            <div className="notif-panel absolute right-0 top-[50px] w-72 max-w-[calc(100vw-2.5rem)] rounded-2xl bg-app-card shadow-diffused-lg ring-1 ring-black/5 p-2 z-10">
               <div className="text-[11px] font-semibold text-app-text-sec uppercase tracking-wide px-3 pt-2 pb-1">
                 Известия
               </div>
@@ -213,102 +216,115 @@ export default function DashboardPage() {
       </div>
 
       {/* Budget card */}
-      <div
-        className="rounded-[20px] px-[22px] pt-6 pb-5 text-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] mt-3"
-        style={{ background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))' }}
-      >
-        <div className="text-[13px] opacity-85 mb-1">Оставащ бюджет</div>
-        <div className="text-[38px] font-extrabold tracking-tight leading-tight tabular-nums">
-          {formatEUR(animRemaining)}
-        </div>
-        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-dashed border-white/25">
-          <div className="flex-1 min-w-0 flex flex-col gap-1.5 text-xs tabular-nums">
-            <div className="flex justify-between opacity-80">
-              <span>Похарчени</span>
-              <span className="font-semibold">{formatEUR(animSpent)}</span>
+      <Reveal className="mt-3">
+        <Bezel variant="full" className="bg-gradient-to-br from-accent to-accent-dark text-white px-[22px] pt-6 pb-5">
+          <div className="text-[13px] opacity-85 mb-1">Оставащ бюджет</div>
+          <div className="text-[38px] font-display font-extrabold tracking-tight leading-tight tabular-nums">
+            {formatEUR(animRemaining)}
+          </div>
+          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-dashed border-white/25">
+            <div className="flex-1 min-w-0 flex flex-col gap-1.5 text-xs tabular-nums">
+              <div className="flex justify-between opacity-80">
+                <span>Похарчени</span>
+                <span className="font-semibold">{formatEUR(animSpent)}</span>
+              </div>
+              <div className="flex justify-between opacity-80">
+                <span>Бюджет</span>
+                <span className="font-semibold">{formatEUR(budget.amount)}</span>
+              </div>
+              <div className="opacity-60 pt-1 leading-snug">
+                {formatDate(period.start)} – {formatDate(new Date(period.end.getTime() - 1))} ({PERIOD_LABEL[budget.period]})
+              </div>
             </div>
-            <div className="flex justify-between opacity-80">
-              <span>Бюджет</span>
-              <span className="font-semibold">{formatEUR(budget.amount)}</span>
-            </div>
-            <div className="opacity-60 pt-1 leading-snug">
-              {formatDate(period.start)} – {formatDate(new Date(period.end.getTime() - 1))} ({PERIOD_LABEL[budget.period]})
+            <BudgetRing percent={pct} />
+          </div>
+        </Bezel>
+      </Reveal>
+
+      {/* Quick actions — asymmetric bento: featured Промоции tile + 3-up row */}
+      <Reveal className="mt-6">
+        <div className="text-base font-display font-bold text-app-text mb-3 tracking-tight">Бързи действия</div>
+        <Link
+          to="/promotions"
+          className="pressable flex items-center gap-4 rounded-2xl bg-app-card shadow-diffused px-5 py-5 transition-colors active:bg-app-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        >
+          <div className="relative w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-accent/10">
+            <IconTag size={26} color="var(--color-accent)" />
+            {hotPromos.length > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 text-[11px] font-bold text-white bg-accent px-1.5 rounded-full min-w-[20px] text-center leading-[18px]">
+                {hotPromos.length}
+              </span>
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[15px] font-display font-bold text-app-text">Промоции</div>
+            <div className="text-xs text-app-text-sec mt-0.5">
+              {hotPromos.length > 0 ? `${hotPromos.length} активни в момента` : 'Разгледай актуални промоции'}
             </div>
           </div>
-          <BudgetRing percent={pct} />
+          <IconChevronRight size={18} color="var(--color-app-text-sec)" />
+        </Link>
+        <div className="grid grid-cols-3 gap-3 mt-3">
+          {quickActions.map((action) => {
+            const Icon = action.icon
+            return (
+              <Link
+                key={action.to}
+                to={action.to}
+                className="pressable flex flex-col items-center gap-2 rounded-2xl bg-app-card shadow-diffused px-2 py-4 transition-colors active:bg-app-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-accent/10">
+                  <Icon size={20} color="var(--color-accent)" />
+                </div>
+                <span className="text-[12px] font-semibold text-app-text text-center">{action.label}</span>
+              </Link>
+            )
+          })}
         </div>
-      </div>
-
-      {/* Quick actions */}
-      <div className="text-base font-bold text-app-text mt-6 mb-3 tracking-tight">Бързи действия</div>
-      <div className="grid grid-cols-2 gap-3">
-        {quickActions.map((action) => {
-          const Icon = action.icon
-          return (
-            <Link
-              key={action.to}
-              to={action.to}
-              className="pressable flex flex-col items-center px-3 pt-[18px] pb-3.5 rounded-2xl bg-app-card border border-app-border transition-colors active:bg-app-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-            >
-              <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center mb-2 bg-accent/10">
-                <Icon size={22} color="var(--color-accent)" />
-                {action.count && (
-                  <span className="absolute -top-1 -right-1.5 text-[10px] font-bold text-white bg-accent px-1.5 rounded-full min-w-[18px] text-center">
-                    {action.count}
-                  </span>
-                )}
-              </div>
-              <span className="text-[13px] font-semibold text-app-text">{action.label}</span>
-            </Link>
-          )
-        })}
-      </div>
+      </Reveal>
 
       {/* Hot promos */}
       {promoState === 'loading' && (
-        <>
-          <div className="text-base font-bold text-app-text mt-6 mb-3 tracking-tight">Горещи промоции 🔥</div>
+        <Reveal className="mt-6">
+          <div className="text-base font-display font-bold text-app-text mb-3 tracking-tight">Горещи промоции</div>
           <div className="flex flex-col gap-2.5 pb-2">
             {[0, 1].map((i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 px-3.5 py-3 rounded-2xl bg-app-card border border-app-border animate-pulse"
-              >
+              <Bezel key={i} variant="flat" className="bg-app-card flex items-center gap-3 px-3.5 py-3 animate-pulse">
                 <div className="w-[52px] h-[52px] rounded-2xl bg-app-border shrink-0" />
                 <div className="flex-1 min-w-0 space-y-2">
                   <div className="h-3 w-2/3 rounded bg-app-border" />
                   <div className="h-2.5 w-1/3 rounded bg-app-border" />
                 </div>
                 <div className="h-4 w-12 rounded bg-app-border shrink-0" />
-              </div>
+              </Bezel>
             ))}
           </div>
-        </>
+        </Reveal>
       )}
 
       {promoState === 'error' && (
-        <>
-          <div className="text-base font-bold text-app-text mt-6 mb-3 tracking-tight">Горещи промоции 🔥</div>
-          <div className="rounded-2xl bg-app-card border border-app-border px-4 py-5 text-center">
+        <Reveal className="mt-6">
+          <div className="text-base font-display font-bold text-app-text mb-3 tracking-tight">Горещи промоции</div>
+          <Bezel variant="flat" className="bg-app-card px-4 py-5 text-center">
             <p className="text-sm text-app-text-sec mb-3">Промоциите не успяха да се заредят.</p>
             <button
               type="button"
               onClick={retryPromotions}
-              className="pressable inline-flex items-center gap-2 rounded-xl bg-accent/10 text-accent text-sm font-semibold px-4 py-2"
+              className="pressable inline-flex items-center gap-2 rounded-full bg-accent/10 text-accent text-sm font-semibold px-4 py-2"
             >
               <IconRefresh size={14} color="var(--color-accent)" />
               Опитай отново
             </button>
-          </div>
-        </>
+          </Bezel>
+        </Reveal>
       )}
 
       {promoState === 'ready' && hotPromos.length > 0 && (
-        <>
-          <div className="text-base font-bold text-app-text mt-6 mb-3 tracking-tight">Горещи промоции 🔥</div>
+        <Reveal className="mt-6">
+          <div className="text-base font-display font-bold text-app-text mb-3 tracking-tight">Горещи промоции</div>
           <div className="flex flex-col gap-2.5 pb-2">
             {hotPromos.map((promo) => (
-              <div key={promo.id} className="flex items-center gap-3 px-3.5 py-3 rounded-2xl bg-app-card border border-app-border">
+              <Bezel key={promo.id} variant="flat" className="bg-app-card flex items-center gap-3 px-3.5 py-3">
                 <div className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0 bg-accent/10">
                   <span className="text-[28px]">{categoryIcon(promo.category)}</span>
                 </div>
@@ -320,10 +336,10 @@ export default function DashboardPage() {
                   <div className="text-xs text-app-text-sec line-through">{formatEUR(promo.regularPrice)}</div>
                   <div className="text-base font-bold text-accent">{formatEUR(promo.promoPrice)}</div>
                 </div>
-              </div>
+              </Bezel>
             ))}
           </div>
-        </>
+        </Reveal>
       )}
     </div>
   )

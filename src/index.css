@@ -3,22 +3,30 @@
 @theme {
   --color-accent: #e8712a;
   --color-accent-dark: #cf5811;
-  --color-app-bg: #f5f5f7;
+  --color-app-bg: #f3f4f6;
   --color-app-card: #ffffff;
-  --color-app-border: #e8e8ee;
-  --color-app-text: #1a1a2e;
-  --color-app-text-sec: #7a7a8e;
+  --color-app-border: #e7e8ec;
+  --color-app-text: #16161a;
+  --color-app-text-sec: #80808c;
+
+  --font-sans: 'Geist', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Geist', system-ui, sans-serif;
+
+  /* Soft Structuralism — wide, diffused ambient shadows instead of hard drop shadows */
+  --shadow-diffused: 0 20px 50px -20px rgba(20, 20, 30, 0.08);
+  --shadow-diffused-lg: 0 30px 70px -25px rgba(20, 20, 30, 0.12);
 }
 
 :root {
   /* Strong custom curves — built-in CSS easings feel weak for UI */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 body {
   margin: 0;
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans);
   background: var(--color-app-bg);
   color: var(--color-app-text);
 }
@@ -37,6 +45,19 @@ body {
   .hoverable:hover {
     filter: brightness(0.96);
   }
+}
+
+/* "Button-in-button" magnetic trailing-icon CTAs — the inner icon nudges toward the cursor */
+.magnetic-icon {
+  transition: transform 300ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .magnetic:hover .magnetic-icon {
+    transform: translate(2px, -1px) scale(1.05);
+  }
+}
+.magnetic:active .magnetic-icon {
+  transform: scale(0.95);
 }
 
 @keyframes shake {
@@ -75,6 +96,20 @@ body {
   animation: notif-pop 160ms var(--ease-out);
 }
 
+/* Scroll-entry reveal — sections fade/blur up into place on first viewport entry */
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(16px); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(6px);
+}
+.reveal-visible {
+  animation: reveal-in 650ms var(--ease-out) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shake {
     animation: none;
@@ -86,6 +121,16 @@ body {
     transition: stroke 0.3s ease;
   }
   .notif-panel {
+    animation: none;
+  }
+  .magnetic-icon {
+    transition: none;
+  }
+  .reveal,
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
     animation: none;
   }
 }

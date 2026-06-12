@@ -18,7 +18,9 @@ Polished consumer-app feel: premium but everyday, in the spirit of modern bankin
 
 ## Anti-references
 
-Avoid the feel of generic spreadsheet-style budgeting tools (dense, gray, joyless) and of templated SaaS dashboards (hero-metric clichés, flat identical cards, gradient accents). The app should feel considered and specific to grocery shopping in Bulgaria, not like a reskinned generic finance template.
+Avoid the feel of generic spreadsheet-style budgeting tools (dense, gray, joyless) and of templated SaaS dashboards (hero-metric clichés, flat identical cards, decorative gradient text). The app should feel considered and specific to grocery shopping in Bulgaria, not like a reskinned generic finance template.
+
+The current visual system realizing these principles — "Soft Structuralism": cool silver-grey surfaces, double-bezel cards, bold Grotesk numbers, a single terracotta accent — is documented in [DESIGN.md](DESIGN.md).
 
 ## Design Principles
 

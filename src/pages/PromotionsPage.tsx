@@ -6,6 +6,8 @@ import { formatEUR } from '../lib/format'
 import { notifyOnce } from '../lib/notifications'
 import { categoryIcon } from '../lib/catalogVisuals'
 import { IconCheck, IconPlus, IconSearch } from '../lib/icons'
+import Bezel from '../components/Bezel'
+import Reveal from '../components/Reveal'
 
 const STORE_ORDER = ['Billa', 'Lidl', 'Kaufland', 'Fantastiko', 'T Market', 'Metro', 'CBA']
 
@@ -51,7 +53,6 @@ export default function PromotionsPage() {
         `„${item.name}“ от списъка ви е в промоция в ${match.store}: ${match.product} за ${formatEUR(match.promoPrice)} (вместо ${formatEUR(match.regularPrice)}).`,
       )
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promotions, items])
 
   const stores = useMemo(() => {
@@ -126,7 +127,7 @@ export default function PromotionsPage() {
     <div className="space-y-1 relative">
       {toast.message && (
         <div
-          className={`absolute -top-1 left-0 right-0 z-20 flex items-center gap-2 rounded-2xl bg-accent text-white px-4 py-3 text-[13px] font-semibold shadow-lg transition-[opacity,transform] duration-300 ease-out ${
+          className={`absolute -top-1 left-0 right-0 z-20 flex items-center gap-2 rounded-2xl bg-accent text-white px-4 py-3 text-[13px] font-semibold shadow-diffused-lg transition-[opacity,transform] duration-300 ease-out ${
             toast.visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
           }`}
         >
@@ -136,7 +137,7 @@ export default function PromotionsPage() {
       )}
 
       <div className="flex items-baseline justify-between py-2">
-        <h1 className="text-[22px] font-bold text-app-text tracking-tight m-0">Промоции</h1>
+        <h1 className="text-[22px] font-display font-bold text-app-text tracking-tight m-0">Промоции</h1>
         {promotions && <span className="text-[13px] font-semibold text-accent">{promotions.length} оферти</span>}
       </div>
 
@@ -150,70 +151,70 @@ export default function PromotionsPage() {
 
       {promotions && (
         <>
-          {/* Search */}
-          <div className="flex items-center gap-2.5 rounded-2xl bg-app-card border border-app-border px-3.5 py-2.5 mb-3">
-            <IconSearch size={18} color="var(--color-app-text-sec)" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Търси продукт..."
-              className="flex-1 border-none outline-none bg-transparent text-sm text-app-text placeholder:text-app-text-sec"
-            />
-          </div>
+          {/* Search + filters */}
+          <Reveal>
+            <Bezel variant="full" className="bg-app-card flex items-center gap-2.5 px-3.5 py-2.5 mb-3">
+              <IconSearch size={18} color="var(--color-app-text-sec)" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Търси продукт..."
+                className="flex-1 border-none outline-none bg-transparent text-sm text-app-text placeholder:text-app-text-sec"
+              />
+            </Bezel>
 
-          {/* Store tabs */}
-          <div className="flex gap-2 overflow-x-auto pb-3 scroll-area">
-            {stores.map((store) => (
-              <button
-                key={store}
-                type="button"
-                onClick={() => setStoreFilter(store)}
-                className={`pressable px-4 py-2 rounded-xl text-[13px] font-semibold whitespace-nowrap transition-colors border ${
-                  storeFilter === store
-                    ? 'bg-accent text-white border-accent'
-                    : 'bg-app-card text-app-text-sec border-app-border'
-                }`}
+            {/* Store tabs */}
+            <div className="flex gap-2 overflow-x-auto pb-3 scroll-area">
+              {stores.map((store) => (
+                <button
+                  key={store}
+                  type="button"
+                  onClick={() => setStoreFilter(store)}
+                  className={`pressable px-4 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap transition-colors shadow-diffused ${
+                    storeFilter === store ? 'bg-accent text-white' : 'bg-app-card text-app-text-sec'
+                  }`}
+                >
+                  {store}
+                </button>
+              ))}
+            </div>
+
+            {/* Category chips */}
+            <div className="flex gap-1.5 overflow-x-auto pb-3 scroll-area">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setCatFilter(cat)}
+                  className={`pressable flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+                    catFilter === cat ? 'bg-accent/10 text-accent' : 'bg-transparent text-app-text-sec'
+                  }`}
+                >
+                  {cat !== 'Всички' && <span>{categoryIcon(cat)}</span>} {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex justify-end pb-1">
+              <select
+                value={sortMode}
+                onChange={(e) => setSortMode(e.target.value as SortMode)}
+                className="rounded-full bg-app-card shadow-diffused px-3 py-1.5 text-xs text-app-text-sec focus:outline-none"
               >
-                {store}
-              </button>
-            ))}
-          </div>
-
-          {/* Category chips */}
-          <div className="flex gap-1.5 overflow-x-auto pb-3 scroll-area">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setCatFilter(cat)}
-                className={`pressable flex items-center gap-1 px-3 py-1.5 rounded-[10px] text-xs font-medium whitespace-nowrap border transition-colors ${
-                  catFilter === cat ? 'bg-accent/[0.09] text-accent border-accent/25' : 'bg-transparent text-app-text-sec border-transparent'
-                }`}
-              >
-                <span>{cat === 'Всички' ? '🏷️' : categoryIcon(cat)}</span> {cat}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex justify-end pb-1">
-            <select
-              value={sortMode}
-              onChange={(e) => setSortMode(e.target.value as SortMode)}
-              className="rounded-lg border border-app-border bg-app-card px-2.5 py-1.5 text-xs text-app-text-sec focus:outline-none"
-            >
-              <option value="discount">По отстъпка</option>
-              <option value="price">По цена</option>
-            </select>
-          </div>
+                <option value="discount">По отстъпка</option>
+                <option value="price">По цена</option>
+              </select>
+            </div>
+          </Reveal>
 
           {/* Products grouped */}
-          <div className="flex flex-col gap-1.5 pb-4">
+          <Reveal className="flex flex-col gap-1.5 pb-4">
             {grouped.map(([key, promos]) => (
               <div key={key}>
                 <div className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-app-text-sec pt-3 pb-2">
                   {key}
-                  <span className="text-[11px] font-semibold bg-black/[0.06] px-2 py-0.5 rounded-lg normal-case tracking-normal">
+                  <span className="text-[11px] font-semibold bg-app-border px-2 py-0.5 rounded-lg normal-case tracking-normal">
                     {promos.length}
                   </span>
                 </div>
@@ -221,7 +222,7 @@ export default function PromotionsPage() {
                   const inList = listIds.has(promo.id)
                   const justAdded = justAddedIds.has(promo.id)
                   return (
-                    <div key={promo.id} className="flex items-center gap-3 px-3.5 py-3 rounded-2xl bg-app-card border border-app-border mb-1.5">
+                    <Bezel key={promo.id} variant="flat" className="bg-app-card flex items-center gap-3 px-3.5 py-3 mb-1.5">
                       <div className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0 bg-accent/10">
                         <span className="text-[26px]">{categoryIcon(promo.category)}</span>
                       </div>
@@ -240,18 +241,20 @@ export default function PromotionsPage() {
                         type="button"
                         onClick={() => !inList && addToList(promo)}
                         disabled={inList}
-                        className={`pressable w-[38px] h-[38px] rounded-xl flex items-center justify-center shrink-0 border-none transition-[transform,background-color] duration-200 ${
+                        className={`magnetic pressable w-[38px] h-[38px] rounded-full flex items-center justify-center shrink-0 border-none transition-[transform,background-color] duration-200 ${
                           justAdded ? 'scale-[1.15]' : 'scale-100'
                         }`}
                         style={{ background: justAdded ? '#22C55E' : inList ? 'var(--color-app-border)' : 'var(--color-accent)' }}
                       >
-                        {justAdded || !inList ? (
-                          justAdded ? <IconCheck size={18} color="#fff" /> : <IconPlus size={18} color="#fff" />
-                        ) : (
-                          <IconCheck size={18} color="var(--color-app-text-sec)" />
-                        )}
+                        <span className="magnetic-icon flex items-center justify-center">
+                          {justAdded || !inList ? (
+                            justAdded ? <IconCheck size={18} color="#fff" /> : <IconPlus size={18} color="#fff" />
+                          ) : (
+                            <IconCheck size={18} color="var(--color-app-text-sec)" />
+                          )}
+                        </span>
                       </button>
-                    </div>
+                    </Bezel>
                   )
                 })}
               </div>
@@ -259,7 +262,7 @@ export default function PromotionsPage() {
             {filtered.length === 0 && (
               <div className="text-center py-10 text-app-text-sec text-sm">Няма намерени промоции</div>
             )}
-          </div>
+          </Reveal>
         </>
       )}
     </div>

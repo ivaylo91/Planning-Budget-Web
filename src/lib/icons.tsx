@@ -1,54 +1,53 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
-  faHouse,
-  faTag,
-  faClipboardList,
-  faClock,
-  faWallet,
-  faPlus,
-  faMinus,
-  faTrashCan,
-  faCheck,
-  faChevronRight,
-  faBell,
-  faMagnifyingGlass,
-  faCartShopping,
-  faUser,
-  faEnvelope,
-  faLock,
-  faEye,
-  faEyeSlash,
-  faArrowRotateRight,
-} from '@fortawesome/free-solid-svg-icons'
+  House,
+  Tag,
+  ClipboardText,
+  Clock,
+  Wallet,
+  Plus,
+  Minus,
+  Trash,
+  Check,
+  CaretRight,
+  Bell,
+  MagnifyingGlass,
+  ShoppingCart,
+  User,
+  EnvelopeSimple,
+  Lock,
+  Eye,
+  EyeSlash,
+  ArrowClockwise,
+  type Icon as PhosphorIcon,
+} from '@phosphor-icons/react'
 
 interface IconProps {
   size?: number
   color?: string
 }
 
-function makeIcon(icon: IconDefinition) {
+function makeIcon(Icon: PhosphorIcon) {
   return ({ size = 24, color = 'currentColor' }: IconProps) => (
-    <FontAwesomeIcon icon={icon} style={{ width: size, height: size, color }} />
+    <Icon size={size} color={color} weight="light" />
   )
 }
 
-export const IconHome = makeIcon(faHouse)
-export const IconTag = makeIcon(faTag)
-export const IconList = makeIcon(faClipboardList)
-export const IconClock = makeIcon(faClock)
-export const IconWallet = makeIcon(faWallet)
-export const IconPlus = makeIcon(faPlus)
-export const IconMinus = makeIcon(faMinus)
-export const IconTrash = makeIcon(faTrashCan)
-export const IconCheck = makeIcon(faCheck)
-export const IconChevronRight = makeIcon(faChevronRight)
-export const IconBell = makeIcon(faBell)
-export const IconSearch = makeIcon(faMagnifyingGlass)
-export const IconCart = makeIcon(faCartShopping)
-export const IconUser = makeIcon(faUser)
-export const IconMail = makeIcon(faEnvelope)
-export const IconLock = makeIcon(faLock)
-export const IconEye = makeIcon(faEye)
-export const IconEyeSlash = makeIcon(faEyeSlash)
-export const IconRefresh = makeIcon(faArrowRotateRight)
+export const IconHome = makeIcon(House)
+export const IconTag = makeIcon(Tag)
+export const IconList = makeIcon(ClipboardText)
+export const IconClock = makeIcon(Clock)
+export const IconWallet = makeIcon(Wallet)
+export const IconPlus = makeIcon(Plus)
+export const IconMinus = makeIcon(Minus)
+export const IconTrash = makeIcon(Trash)
+export const IconCheck = makeIcon(Check)
+export const IconChevronRight = makeIcon(CaretRight)
+export const IconBell = makeIcon(Bell)
+export const IconSearch = makeIcon(MagnifyingGlass)
+export const IconCart = makeIcon(ShoppingCart)
+export const IconUser = makeIcon(User)
+export const IconMail = makeIcon(EnvelopeSimple)
+export const IconLock = makeIcon(Lock)
+export const IconEye = makeIcon(Eye)
+export const IconEyeSlash = makeIcon(EyeSlash)
+export const IconRefresh = makeIcon(ArrowClockwise)
