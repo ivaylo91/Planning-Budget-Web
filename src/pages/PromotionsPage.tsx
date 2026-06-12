@@ -1,17 +1,23 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useWindowVirtualizer } from '@tanstack/react-virtual'
 import { useSyncedState } from '../lib/sync'
 import { discountPercent, findMatchingPromotions, isPromotionActive, loadPromotions } from '../lib/promotions'
 import type { Promotion, ShoppingListItem } from '../lib/types'
 import { formatEUR } from '../lib/format'
 import { notifyOnce } from '../lib/notifications'
-import { categoryIcon } from '../lib/catalogVisuals'
-import { IconCheck, IconPlus, IconSearch } from '../lib/icons'
+import { categoryIcon, storeColor } from '../lib/catalogVisuals'
+import { IconCheck, IconFlame, IconPlus, IconSearch } from '../lib/icons'
 import Bezel from '../components/Bezel'
 import Reveal from '../components/Reveal'
 
 const STORE_ORDER = ['Billa', 'Lidl', 'Kaufland', 'Fantastiko', 'T Market', 'Metro', 'CBA']
+const TOP = 'Топ'
 
 type SortMode = 'discount' | 'price'
+
+type Row =
+  | { type: 'header'; key: string; label: string; count: number }
+  | { type: 'promo'; promo: Promotion }
 
 export default function PromotionsPage() {
   const [promotions, setPromotions] = useState<Promotion[] | null>(null)
@@ -22,6 +28,7 @@ export default function PromotionsPage() {
   const [sortMode, setSortMode] = useState<SortMode>('discount')
   const [justAddedIds, setJustAddedIds] = useState<Set<string>>(new Set())
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false })
+  const [listVisible, setListVisible] = useState(false)
 
   const [items, setItems] = useSyncedState<ShoppingListItem[]>('shoppingList', [])
 
@@ -38,6 +45,13 @@ export default function PromotionsPage() {
       cancelled = true
     }
   }, [])
+
+  // Fade the list in once the catalog has loaded.
+  useEffect(() => {
+    if (!promotions) return
+    const frame = requestAnimationFrame(() => setListVisible(true))
+    return () => cancelAnimationFrame(frame)
+  }, [promotions])
 
   // Notify (once per promo) when an active promo matches something already on the user's shopping list.
   useEffect(() => {
@@ -58,7 +72,7 @@ export default function PromotionsPage() {
   const stores = useMemo(() => {
     if (!promotions) return []
     const present = new Set(promotions.map((p) => p.store))
-    return ['Всички', ...STORE_ORDER.filter((store) => present.has(store))]
+    return [TOP, 'Всички', ...STORE_ORDER.filter((store) => present.has(store))]
   }, [promotions])
 
   const categories = useMemo(() => {
@@ -66,21 +80,27 @@ export default function PromotionsPage() {
     return ['Всички', ...Array.from(new Set(promotions.map((p) => p.category))).sort()]
   }, [promotions])
 
+  const isTop = storeFilter === TOP
+
   const filtered = useMemo(() => {
     if (!promotions) return []
     const query = search.trim().toLowerCase()
+    const effectiveSort: SortMode = isTop ? 'discount' : sortMode
     return promotions
-      .filter((promo) => storeFilter === 'Всички' || promo.store === storeFilter)
+      .filter((promo) => isTop || storeFilter === 'Всички' || promo.store === storeFilter)
       .filter((promo) => catFilter === 'Всички' || promo.category === catFilter)
       .filter((promo) => !query || promo.product.toLowerCase().includes(query))
       .sort((a, b) =>
-        sortMode === 'discount'
+        effectiveSort === 'discount'
           ? discountPercent(b) - discountPercent(a)
           : a.promoPrice - b.promoPrice,
       )
-  }, [promotions, storeFilter, catFilter, search, sortMode])
+  }, [promotions, storeFilter, catFilter, search, sortMode, isTop])
 
-  const grouped = useMemo(() => {
+  const rows = useMemo<Row[]>(() => {
+    if (isTop) {
+      return filtered.map((promo) => ({ type: 'promo', promo }))
+    }
     const groups = new Map<string, Promotion[]>()
     for (const promo of filtered) {
       const key = storeFilter === 'Всички' ? promo.store : promo.category
@@ -88,10 +108,33 @@ export default function PromotionsPage() {
       list.push(promo)
       groups.set(key, list)
     }
-    return [...groups.entries()]
-  }, [filtered, storeFilter])
+    const result: Row[] = []
+    for (const [key, promos] of groups) {
+      result.push({ type: 'header', key, label: key, count: promos.length })
+      for (const promo of promos) result.push({ type: 'promo', promo })
+    }
+    return result
+  }, [filtered, storeFilter, isTop])
 
   const listIds = useMemo(() => new Set(items.map((item) => item.id)), [items])
+
+  const listRef = useRef<HTMLDivElement>(null)
+  const [scrollMargin, setScrollMargin] = useState(0)
+
+  useLayoutEffect(() => {
+    setScrollMargin(listRef.current?.offsetTop ?? 0)
+  }, [storeFilter, catFilter])
+
+  const virtualizer = useWindowVirtualizer({
+    count: rows.length,
+    estimateSize: (index) => (rows[index]?.type === 'header' ? 40 : 84),
+    overscan: 6,
+    scrollMargin,
+    getItemKey: (index) => {
+      const row = rows[index]
+      return row?.type === 'header' ? `header-${row.key}` : row?.promo.id ?? index
+    },
+  })
 
   function showToast(message: string) {
     setToast({ message, visible: true })
@@ -175,7 +218,14 @@ export default function PromotionsPage() {
                     storeFilter === store ? 'bg-accent text-white' : 'bg-app-card text-app-text-sec'
                   }`}
                 >
-                  {store}
+                  {store === TOP ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <IconFlame size={14} color={storeFilter === TOP ? '#fff' : 'var(--color-accent)'} />
+                      {TOP}
+                    </span>
+                  ) : (
+                    store
+                  )}
                 </button>
               ))}
             </div>
@@ -196,75 +246,118 @@ export default function PromotionsPage() {
               ))}
             </div>
 
-            <div className="flex justify-end pb-1">
-              <select
-                value={sortMode}
-                onChange={(e) => setSortMode(e.target.value as SortMode)}
-                className="rounded-full bg-app-card shadow-diffused px-3 py-1.5 text-xs text-app-text-sec focus:outline-none"
-              >
-                <option value="discount">По отстъпка</option>
-                <option value="price">По цена</option>
-              </select>
-            </div>
+            {!isTop && (
+              <div className="flex justify-end pb-1">
+                <select
+                  value={sortMode}
+                  onChange={(e) => setSortMode(e.target.value as SortMode)}
+                  className="rounded-full bg-app-card shadow-diffused px-3 py-1.5 text-xs text-app-text-sec focus:outline-none"
+                >
+                  <option value="discount">По отстъпка</option>
+                  <option value="price">По цена</option>
+                </select>
+              </div>
+            )}
           </Reveal>
 
-          {/* Products grouped */}
-          <Reveal className="flex flex-col gap-1.5 pb-4">
-            {grouped.map(([key, promos]) => (
-              <div key={key}>
-                <div className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-app-text-sec pt-3 pb-2">
-                  {key}
-                  <span className="text-[11px] font-semibold bg-app-border px-2 py-0.5 rounded-lg normal-case tracking-normal">
-                    {promos.length}
-                  </span>
-                </div>
-                {promos.map((promo) => {
-                  const inList = listIds.has(promo.id)
-                  const justAdded = justAddedIds.has(promo.id)
+          {/* Products — virtualized list */}
+          <div ref={listRef} className={`list-fade ${listVisible ? 'list-fade-visible' : ''}`}>
+            {rows.length === 0 ? (
+              <div className="text-center py-10 text-app-text-sec text-sm">Няма намерени промоции</div>
+            ) : (
+              <div style={{ position: 'relative', height: virtualizer.getTotalSize() }} className="pb-4">
+                {virtualizer.getVirtualItems().map((virtualItem) => {
+                  const row = rows[virtualItem.index]
                   return (
-                    <Bezel key={promo.id} variant="flat" className="bg-app-card flex items-center gap-3 px-3.5 py-3 mb-1.5">
-                      <div className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0 bg-accent/10">
-                        <span className="text-[26px]">{categoryIcon(promo.category)}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-app-text mb-0.5 truncate">{promo.product}</div>
-                        <div className="text-xs text-app-text-sec">{promo.store} · {promo.category}</div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-app-text-sec line-through">{formatEUR(promo.regularPrice)}</span>
-                          <span className="text-[15px] font-bold text-accent">{formatEUR(promo.promoPrice)}</span>
-                          <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-lg bg-accent/[0.18] text-accent">
-                            -{discountPercent(promo)}%
+                    <div
+                      key={virtualItem.key}
+                      data-index={virtualItem.index}
+                      ref={virtualizer.measureElement}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        transform: `translateY(${virtualItem.start - virtualizer.options.scrollMargin}px)`,
+                      }}
+                    >
+                      {row.type === 'header' ? (
+                        <div className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-app-text-sec pt-3 pb-2">
+                          {row.label}
+                          <span className="text-[11px] font-semibold bg-app-border px-2 py-0.5 rounded-lg normal-case tracking-normal">
+                            {row.count}
                           </span>
                         </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => !inList && addToList(promo)}
-                        disabled={inList}
-                        className={`magnetic pressable w-[38px] h-[38px] rounded-full flex items-center justify-center shrink-0 border-none transition-[transform,background-color] duration-200 ${
-                          justAdded ? 'scale-[1.15]' : 'scale-100'
-                        }`}
-                        style={{ background: justAdded ? '#22C55E' : inList ? 'var(--color-app-border)' : 'var(--color-accent)' }}
-                      >
-                        <span className="magnetic-icon flex items-center justify-center">
-                          {justAdded || !inList ? (
-                            justAdded ? <IconCheck size={18} color="#fff" /> : <IconPlus size={18} color="#fff" />
-                          ) : (
-                            <IconCheck size={18} color="var(--color-app-text-sec)" />
-                          )}
-                        </span>
-                      </button>
-                    </Bezel>
+                      ) : (
+                        <div className="pb-1.5">
+                          <PromoRow
+                            promo={row.promo}
+                            showStoreBadge={isTop}
+                            inList={listIds.has(row.promo.id)}
+                            justAdded={justAddedIds.has(row.promo.id)}
+                            onAdd={() => addToList(row.promo)}
+                          />
+                        </div>
+                      )}
+                    </div>
                   )
                 })}
               </div>
-            ))}
-            {filtered.length === 0 && (
-              <div className="text-center py-10 text-app-text-sec text-sm">Няма намерени промоции</div>
             )}
-          </Reveal>
+          </div>
         </>
       )}
     </div>
+  )
+}
+
+interface PromoRowProps {
+  promo: Promotion
+  showStoreBadge: boolean
+  inList: boolean
+  justAdded: boolean
+  onAdd: () => void
+}
+
+function PromoRow({ promo, showStoreBadge, inList, justAdded, onAdd }: PromoRowProps) {
+  return (
+    <Bezel variant="flat" className="bg-app-card flex items-center gap-3 px-3.5 py-3">
+      <div className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0 bg-accent/10">
+        <span className="text-[26px]">{categoryIcon(promo.category)}</span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-semibold text-app-text mb-0.5 truncate">{promo.product}</div>
+        <div className="text-xs text-app-text-sec flex items-center gap-1.5">
+          {showStoreBadge && (
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: storeColor(promo.store) }} />
+          )}
+          {promo.store} · {promo.category}
+        </div>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-xs text-app-text-sec line-through">{formatEUR(promo.regularPrice)}</span>
+          <span className="text-[15px] font-bold text-accent">{formatEUR(promo.promoPrice)}</span>
+          <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-lg bg-accent/[0.18] text-accent">
+            -{discountPercent(promo)}%
+          </span>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={() => !inList && onAdd()}
+        disabled={inList}
+        className={`magnetic pressable w-[38px] h-[38px] rounded-full flex items-center justify-center shrink-0 border-none transition-[transform,background-color] duration-200 ${
+          justAdded ? 'scale-[1.15]' : 'scale-100'
+        }`}
+        style={{ background: justAdded ? '#22C55E' : inList ? 'var(--color-app-border)' : 'var(--color-accent)' }}
+      >
+        <span className="magnetic-icon flex items-center justify-center">
+          {justAdded || !inList ? (
+            justAdded ? <IconCheck size={18} color="#fff" /> : <IconPlus size={18} color="#fff" />
+          ) : (
+            <IconCheck size={18} color="var(--color-app-text-sec)" />
+          )}
+        </span>
+      </button>
+    </Bezel>
   )
 }

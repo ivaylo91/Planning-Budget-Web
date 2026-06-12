@@ -5,7 +5,7 @@ import { DEFAULT_BUDGET, type Budget, type Promotion, type PurchaseRecord } from
 import { formatDate, getCurrentPeriod, purchasesInPeriod } from '../lib/period'
 import { formatEUR } from '../lib/format'
 import { notifyOnce } from '../lib/notifications'
-import { isPromotionActive, loadPromotions } from '../lib/promotions'
+import { discountPercent, isPromotionActive, loadPromotions } from '../lib/promotions'
 import { categoryIcon } from '../lib/catalogVisuals'
 import { IconBell, IconTag, IconList, IconClock, IconWallet, IconRefresh, IconChevronRight } from '../lib/icons'
 import BudgetRing from '../components/BudgetRing'
@@ -78,7 +78,11 @@ export default function DashboardPage() {
   }
 
   const hotPromos = useMemo(
-    () => promotions.filter((promo) => isPromotionActive(promo)).slice(0, 4),
+    () =>
+      promotions
+        .filter((promo) => isPromotionActive(promo))
+        .sort((a, b) => discountPercent(b) - discountPercent(a))
+        .slice(0, 4),
     [promotions],
   )
 

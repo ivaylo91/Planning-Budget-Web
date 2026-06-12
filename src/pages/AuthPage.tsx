@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '../lib/auth'
+import { useAuth } from '../lib/auth-context'
 import { IconCart, IconUser, IconMail, IconLock, IconEye, IconEyeSlash, IconCheck, IconChevronRight } from '../lib/icons'
 import Bezel from '../components/Bezel'
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useAuth } from './auth'
+import { useAuth } from './auth-context'
 import { supabase } from './supabase'
 
 const COLUMN = {
@@ -30,12 +30,20 @@ export function useSyncedState<T>(key: SyncKey, fallback: T) {
   const writeTimer = useRef<number | undefined>(undefined)
   const pending = useRef<{ userId: string; column: ColumnName; value: T } | null>(null)
 
+  // Reset to the fallback as soon as the signed-in user (or column) changes, before
+  // the fetch below runs — done during render per React's "adjust state while
+  // rendering" pattern, since a synchronous setState in an effect body forces an
+  // extra commit.
+  const [prevKey, setPrevKey] = useState(`${userId ?? ''}:${column}`)
+  const currentKey = `${userId ?? ''}:${column}`
+  if (currentKey !== prevKey) {
+    setPrevKey(currentKey)
+    if (!userId) setValue(fallback)
+  }
+
   useEffect(() => {
     ready.current = false
-    if (!userId) {
-      setValue(fallback)
-      return
-    }
+    if (!userId) return
     let cancelled = false
     supabase
       .from('user_data')

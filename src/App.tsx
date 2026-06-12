@@ -8,7 +8,7 @@ import AuthPage from './pages/AuthPage'
 import { useSyncedState } from './lib/sync'
 import type { ShoppingListItem } from './lib/types'
 import { IconHome, IconTag, IconList, IconClock, IconWallet } from './lib/icons'
-import { useAuth } from './lib/auth'
+import { useAuth } from './lib/auth-context'
 
 const TABS = [
   { to: '/', label: 'Начало', end: true, icon: IconHome },

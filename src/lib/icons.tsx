@@ -18,6 +18,7 @@ import {
   Eye,
   EyeSlash,
   ArrowClockwise,
+  Flame,
   type Icon as PhosphorIcon,
 } from '@phosphor-icons/react'
 
@@ -51,3 +52,4 @@ export const IconLock = makeIcon(Lock)
 export const IconEye = makeIcon(Eye)
 export const IconEyeSlash = makeIcon(EyeSlash)
 export const IconRefresh = makeIcon(ArrowClockwise)
+export const IconFlame = makeIcon(Flame)

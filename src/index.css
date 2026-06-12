@@ -110,6 +110,16 @@ body {
   animation: reveal-in 650ms var(--ease-out) forwards;
 }
 
+/* Simple opacity fade-in for the virtualized promotions list (no transform — rows are
+   already positioned via the virtualizer's own translateY). */
+.list-fade {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+}
+.list-fade-visible {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shake {
     animation: none;
@@ -132,5 +142,9 @@ body {
     transform: none;
     filter: none;
     animation: none;
+  }
+  .list-fade {
+    opacity: 1;
+    transition: none;
   }
 }
